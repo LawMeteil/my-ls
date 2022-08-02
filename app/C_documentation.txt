@@ -1,0 +1,94 @@
+03/01/2022:
+Semaine C:
+
+-l
+	En plus du nom, afficher le type du fichier, les permissions d'accès, le nombre de liens physiques, le nom du propriétaire et du groupe, la taille en octets, et l'horodatage. 
+	La ligne de résumé utilise des unités de 512 octets. Les types de fichiers sont indiqués par les caractères suivants :
+	- pour les fichiers ordinaires, d pour un répertoire (directory), b pour un fichier spécial en mode bloc, c pour un fichier spécial en mode caractère, l pour un lien symbolique, p pour une fifo (named pipe), s pour une socket. 
+	
+	Par défaut, l'horodatage présenté est celui de la dernière modification du fichier. 
+	Les options -c et -u réclament les autres horodatages. 
+	Pour les fichiers spéciaux, le champ de taille est généralement remplacé par les numéros majeur et mineur du périphérique.
+
+-R
+	Afficher récursivement le contenu des sous-répertoires.
+
+-r
+	Inverser le tri du contenu des répertoires.
+
+-d
+	Afficher les répertoires avec la même présentation que les fichiers, sans lister leur contenu.
+
+-t
+	Trier le contenu des répertoires en fonction de la date et non pas en ordre alphabétique. Les fichiers les plus récents sont présentés en premier.
+
+-a
+	Afficher tous les fichiers des répertoires, y compris les fichiers commençant par un « . ».
+
+-A, --almost-all
+	Afficher tous les fichiers du répertoire sauf « . » et « .. ».
+
+-L, --dereference
+	Afficher les informations concernant les fichiers pointés par les liens symboliques et non pas celles concernant les liens eux-mêmes.
+
+
+						FONCTION
+opendir:
+_ Fonction qui prend un seul argument (pointeur char) pour ouvrir le nom du répertoire spécifier. 
+	Elle renvoie DIR* ou NULL si une erreur est rencontrée.
+
+readdir:
+_ Fonction qui renvoie un pointeur vers la struture [dirent] représentant l'entrée suivante du répertoire. 
+	[readdir] renvoie NULL quand la fin du répertoire est atteinte.
+	Implémentation d'une simple boucle [while] qui imprime chaque entrée dans le flux de répertoire ouvert.
+
+closedir:
+_ Fonction renvoie 0 si elle réussit ou -1 si elle échoue, auquel cas [errno] contient le code d'erreur.
+	Ferme le flux de répertoire associé à [dir]. Après cette action, le [dir] du flux de répertoire n'est plus disponible.
+
+stat:
+_ Fonctions renvoient des informations à propos d'un fichier. Aucune permission n'est nécessaire sur le fichier lui-même.
+	Mais vousa devez---dans le cas [stat()] et [lstat()]---avoir la permission d'éxecution (parcours) pour les répertoires de [path] qui mènent au fichier.
+ [stat()] récupère l'état du fichier pointé par [path] et remplit le tampon [buf].
+ [lstat()] est identique à [stat()], sauf que si [path] est un lien symbolique, il donne l'état du lien lui-même plutôt que celui du fichier visé.
+ [fstat()] est identique à [stat()], saud que le fichier ouvert est pointé par le descripteur [fd], obtenu avec [open()].
+ 
+getpwuid:
+_ La fonction [getpwuid()] doit rechercher dans la base de données utilisateur une entrée avec un uid correspondant .
+	La fonction [getpwuid()] n'a pas besoin d'être réentrante. 
+Une fonction qui n'a pas besoin d'être réentrante n'a pas besoin d'être thread-safe.
+	Les applications souhaitant vérifier les situations d'erreur doivent définir errno sur 0 avant d'appeler [getpwuid()]. 
+	Si [getpwuid()] renvoie un pointeur nul et que errno est défini sur une valeur différente de zéro, une erreur s'est produite.
+
+getgrgid:
+_ La fonction [getgrgid()] doit rechercher dans la base de données du groupe une entrée avec un [gid] correspondant.
+	La fonction [getgrgid()] n'a pas besoin d'être réentrante. Une fonction qui n'a pas besoin d'être réentrante n'a pas besoin d'être thread-safe.
+
+getcwd:
+_ La fonction [getcwd()] copie le chemin d'accès absolu du répertoire de travail courant dans la chaîne pointée par [buf], qui est de longueur [size].
+
+ctime/ctime-r/strftime/localtime/localtime-r:
+_ https://koor.fr/C/ctime/ctime.wp
+
+readlink:
+_ [readlink()] place le contenu du lien symbolique path dans le tampon [buf] dont la taille est [bufsiz]. 
+	[readlink()] n'ajoute pas de caractère NUL dans le tampon [buf]. Il tronquera le contenu (à la longueur [bufsiz]) si le tampon est trop petit pour recevoir les données.
+
+getopt:
+_ http://manpagesfr.free.fr/man/man3/getopt.3.html
+
+malloc:
+_ Fonction qui alloue un blox de mémoire dans le tas. 
+	[memorySize]:permet de spécifier la taille (en octets) du bloc de mémoire à allouer.
+
+free:
+_ Fonction qui libère un bloc de mémoire alloué dynamiquement dans le tas via un appel à la fonction [malloc] (ou une autre fonction de d'allocation mémoire: [aligned_alloc],[calloc]ou[realloc]).
+	[pointer]: l'adresse du bloc de mémoire à désallouer. Obligatoirement avoir été obtenu par un appel à l'une des fonctions d'allocations mémoire précédemment citées.
+
+errno/strerror:
+_ Le fichier d'entête <errno.h> définit la variable entière [errno] qui est renseignée par les appels système (et quelques fonctions de bibliothèque) pour expliquer les conditions d'erreurs. 
+	Sa valeur n'est significative que lorsque l'appel système a échoué (généralement en renvoyant -1), car même en cas de réussite, une fonction de bibliothèque peut modifier [errno].
+
+write:
+_ [write()] écrit jusqu'à [count] octets dans le fichier associé au descripteur [fd] depuis le tampon pointé par [buf].
+	http://manpagesfr.free.fr/man/man2/write.2.html
